@@ -77,11 +77,11 @@ async def cancel_handler(message: Message, state: FSMContext):
 async def back_handler(message: Message, state: FSMContext):
     current_state = await state.get_state()
 
-    if current_state == AddProduct.price.state:
+    if current_state == AddProduct.price:
         await message.answer("Введите название товара:", reply_markup=cancel_back_keyboard())
         await state.set_state(AddProduct.name)
 
-    elif current_state == AddProduct.content.state:
+    elif current_state == AddProduct.content:
         await message.answer("Введите цену:", reply_markup=cancel_back_keyboard())
         await state.set_state(AddProduct.price)
 
@@ -109,7 +109,11 @@ async def add_product_start(callback: CallbackQuery, state: FSMContext):
 @router.message(AddProduct.name)
 async def add_name(message: Message, state: FSMContext):
     await state.update_data(name=message.text)
-    await message.answer("Введите цену:", reply_markup=cancel_back_keyboard())
+
+    await message.answer(
+        "Введите цену:",
+        reply_markup=cancel_back_keyboard()
+    )
     await state.set_state(AddProduct.price)
 
 
@@ -120,7 +124,11 @@ async def add_price(message: Message, state: FSMContext):
         return
 
     await state.update_data(price=int(message.text))
-    await message.answer("Введите контент:", reply_markup=cancel_back_keyboard())
+
+    await message.answer(
+        "Введите контент:",
+        reply_markup=cancel_back_keyboard()
+    )
     await state.set_state(AddProduct.content)
 
 
